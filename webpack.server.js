@@ -33,17 +33,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.css$/,
-                loader: 'css-loader',
-                options: {
-                    onlyLocals: true,
-                    modules: {
-                        localIdentName: dev ? '[name]__[local]___[hash:base64:5]' : '[hash:base64]'
-                    }
-                }
-            },
-            {
-                test: /\.scss$/,
+                test: /\.s?css$/,
                 use: [
                     {
                         loader: 'css-loader',

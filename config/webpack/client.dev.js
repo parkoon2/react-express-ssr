@@ -6,11 +6,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
-const pathsToClean = ['public']
-const cleanOptions = {
-    watch: true
-}
-
 const AssetsPlugin = require('assets-webpack-plugin')
 
 const assetsPluginInstance = new AssetsPlugin({
@@ -18,17 +13,8 @@ const assetsPluginInstance = new AssetsPlugin({
     prettyPrint: true
 })
 
-const VENDOR_LIBRARIES = [
-    'react',
-    'react-dom',
-    'react-router-dom',
-    'axios',
-    'react-redux',
-    'react-router-config',
-    'redux'
-]
-
 const dev = process.env.NODE_ENV === 'development'
+
 module.exports = {
     mode: process.env.NODE_ENV || 'development',
     devtool: dev ? 'inline-source-map' : 'source-map',
@@ -37,7 +23,6 @@ module.exports = {
         app: './src/client/client.js'
     },
     output: {
-        // filename: 'server.bundle.js',
         path: path.resolve(__dirname, 'public'),
         filename: '[name].[hash].js',
         chunkFilename: '[name].[chunkhash].chunk.js'
@@ -50,7 +35,41 @@ module.exports = {
                 use: ['babel-loader']
             },
             {
-                test: /\.s?css$/,
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: true,
+                            modules: {
+                                localIdentName:
+                                    dev === 'production'
+                                        ? '[hash:base64]'
+                                        : '[name]__[local]___[hash:base64:5]'
+                            }
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            ident: 'postcss',
+                            plugins: [
+                                require('postcss-flexbugs-fixes'),
+                                require('postcss-preset-env')({
+                                    autoprefixer: true,
+                                    stage: 3,
+                                    features: { 'custom-properties': false }
+                                })
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.scss$/,
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader
