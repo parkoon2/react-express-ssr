@@ -4,6 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const pathsToClean = ['public']
 const cleanOptions = {
@@ -166,6 +167,10 @@ module.exports = {
             filename: 'css/style.css'
         }),
         new CleanWebpackPlugin(),
+        new BundleAnalyzerPlugin({
+            analyzerHost: '127.0.0.1',
+            analyzerPort: 8080
+        }),
         assetsPluginInstance
     ],
     resolve: {
